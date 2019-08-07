@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker'
-import VtkRoot from './vtk/VtkRoot'
+import App from './containers/App'
 import { Provider } from 'react-redux'
 import store from './store'
 import 'antd/dist/antd.css';
 
 ReactDOM.render(
   <Provider store={store}>
-    <VtkRoot />
+    <App />
   </Provider>,
   document.getElementById('root')
 )

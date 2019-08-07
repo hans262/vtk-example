@@ -1,13 +1,10 @@
 import React, { useRef, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { initRenderer, destoryRenderer } from 'store/vtk/actions'
-// import HttpSceneLoader from 'example/HttpSceneLoader'
 
-const mapstate = ({ vtk }) => ({ vtk })
-export default connect(mapstate)(function View(props) {
+export default connect()((props) => {
   const ref = useRef(null)
-  const { dispatch, vtk } = props
-  const { renderer, renderWindow } = vtk
+  const { dispatch } = props
   useEffect(() => {
     //初始化渲染器
     const vtkGenericRenderWindow = window.vtk.Rendering.Misc.vtkGenericRenderWindow
@@ -23,13 +20,9 @@ export default connect(mapstate)(function View(props) {
       //销毁渲染器
       dispatch(destoryRenderer())
     }
+    // eslint-disable-next-line
   }, [])
 
-  useEffect(() => {
-    if (renderer && renderWindow) {
-      // HttpSceneLoader(renderer,renderWindow)
-    }
-  }, [renderer, renderWindow])
   return (
     <div ref={ref} style={{ height: 800 }}></div>
   )
