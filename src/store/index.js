@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux'
 import { createStore } from 'redux'
-
 import vtk from './vtk'
 
 const rootState = combineReducers({
