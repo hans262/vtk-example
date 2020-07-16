@@ -3,14 +3,15 @@ import { connect } from 'react-redux'
 import {
   initRenderer, destoryRenderer,
   removeActor, renderActor
-} from 'store/actions'
+} from './store/actions'
 
-const mapstate = ({ vtk }) => ({ vtk })
-export default connect(mapstate)((props) => {
+
+const mapstate = ({ vtk }: any) => ({ vtk })
+export default connect(mapstate)((props: any) => {
   const view = useRef(null)
   const { dispatch, vtk } = props
   const { dataCache } = vtk
-
+  
   useEffect(() => {
     //初始化渲染器
     const vtkGenericRenderWindow = window.vtk.Rendering.Misc.vtkGenericRenderWindow
@@ -26,12 +27,12 @@ export default connect(mapstate)((props) => {
     return () => {
       dispatch(destoryRenderer())
     }
-  }, [])
+  }, [dispatch])
 
-  function change(e, v) {
+  function change(e: React.ChangeEvent<HTMLInputElement>, v: any) {
     const { target: { checked } } = e
     const { id } = v
-    const actors = dataCache.find(x => x.id === id).actor
+    const actors = dataCache.find((x: any) => x.id === id).actor
     if (checked) {
       dispatch(renderActor(actors))
     } else {
@@ -42,9 +43,13 @@ export default connect(mapstate)((props) => {
     <div>
       <div ref={view} style={{ height: 600 }}></div>
       <div style={{ marginTop: '20px' }}>
-        {dataCache.map(v =>
+        {dataCache.map((v: any) =>
           <label key={v.id} style={{ margin: '0 10px 0 0' }}>
-            <input type="checkbox" value={v.id} onChange={e => change(e, v)} />
+            <input
+              type="checkbox"
+              value={v.id}
+              onChange={e => change(e, v)}
+            />
             {v.name}
           </label>
         )}

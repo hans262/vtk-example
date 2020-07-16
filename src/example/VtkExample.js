@@ -3,11 +3,13 @@ import React, { useEffect, useRef } from 'react'
 export default function App(){
   const ref=useRef(null)
   useEffect(()=>{
-    const vtkGenericRenderWindow = window.vtk.Rendering.Misc.vtkGenericRenderWindow
+    //导入椎体
     const vtkMapper= window.vtk.Rendering.Core.vtkMapper
     const vtkActor= window.vtk.Rendering.Core.vtkActor
-    const vtkConeSource=window.vtk.Filters.Sources.vtkConeSource//导入椎体
+    const vtkConeSource=window.vtk.Filters.Sources.vtkConeSource
+
     //创建渲染器，渲染窗口
+    const vtkGenericRenderWindow = window.vtk.Rendering.Misc.vtkGenericRenderWindow
     const genericRenderWindow=vtkGenericRenderWindow.newInstance()
     genericRenderWindow.setContainer(ref.current)
     genericRenderWindow.resize()
