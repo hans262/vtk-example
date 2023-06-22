@@ -1,49 +1,53 @@
-import React, { useRef, useEffect } from 'react'
-import { connect } from 'react-redux'
-import {
-  initRenderer, destoryRenderer,
-  removeActor, renderActor
-} from './store/actions'
+import { useRef, useEffect } from 'react'
+import { DataModel } from './data'
 
+import vtkRenderWindow from '@kitware/vtk.js/Rendering/Core/RenderWindow'
+import vtkRenderer from '@kitware/vtk.js/Rendering/Core/Renderer'
 
-const mapstate = ({ vtk }: any) => ({ vtk })
-export default connect(mapstate)((props: any) => {
-  const view = useRef(null)
-  const { dispatch, vtk } = props
-  const { dataCache } = vtk
-  
+function App() {
+  const divRef = useRef<HTMLDivElement>(null)
+  const renderer = useRef<vtkRenderer>()
+  const renderWindow = useRef<vtkRenderWindow>()
+
   useEffect(() => {
+    if (!divRef.current) return
     //初始化渲染器
     const vtkGenericRenderWindow = window.vtk.Rendering.Misc.vtkGenericRenderWindow
     const genericRenderWindow = vtkGenericRenderWindow.newInstance({
-      background: [0, 0, 0]
+      background: [0, 0, 0],
     })
-    genericRenderWindow.setContainer(view.current)
+    genericRenderWindow.setContainer(divRef.current)
     genericRenderWindow.resize()
-    const renderer = genericRenderWindow.getRenderer()
-    const renderWindow = genericRenderWindow.getRenderWindow()
-    dispatch(initRenderer(renderer, renderWindow))
-
-    return () => {
-      dispatch(destoryRenderer())
-    }
-  }, [dispatch])
+    renderer.current = genericRenderWindow.getRenderer()
+    renderWindow.current = genericRenderWindow.getRenderWindow()
+  }, [])
 
   function change(e: React.ChangeEvent<HTMLInputElement>, v: any) {
+    if (!renderer.current || !renderWindow.current) return
     const { target: { checked } } = e
     const { id } = v
-    const actors = dataCache.find((x: any) => x.id === id).actor
+    const actors = DataModel.find((x: any) => x.id === id).actor
+
     if (checked) {
-      dispatch(renderActor(actors))
+      renderer.current.addActor(actors)
+      renderer.current.resetCamera()
+      renderWindow.current.render()
+
     } else {
-      dispatch(removeActor(actors))
+      actors.forEach((v: any) => {
+        renderer.current?.removeActor(v)
+      })
+
+      renderer.current.resetCamera()
+      renderWindow.current.render()
     }
   }
+
   return (
     <div>
-      <div ref={view} style={{ height: 600 }}></div>
+      <div ref={divRef} style={{ height: 600 }}></div>
       <div style={{ marginTop: '20px' }}>
-        {dataCache.map((v: any) =>
+        {DataModel.map((v: any) =>
           <label key={v.id} style={{ margin: '0 10px 0 0' }}>
             <input
               type="checkbox"
@@ -56,5 +60,6 @@ export default connect(mapstate)((props: any) => {
       </div>
     </div>
   )
-})
+}
 
+export default App

@@ -1,6 +1,11 @@
 label {
   cursor: pointer;
 }
+
 input[type=checkbox] {
   cursor: pointer;
+}
+
+* {
+  user-select: none;
 }
